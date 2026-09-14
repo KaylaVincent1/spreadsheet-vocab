@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Squad Stats Hub — Spreadsheet Vocabulary</title>
+<style>
+  :root{
+    --navy-dark:#0D1B2A;
+    --navy-mid:#16273B;
+    --navy-card:#1E3350;
+    --pitch-green:#3DDC84;
+    --gold:#FFC857;
+    --text-main:#F5F7FA;
+    --text-muted:#93A1B0;
+    --line:#2C4562;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--navy-dark);
+    color:var(--text-main);
+    font-family:-apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    line-height:1.5;
+    padding:0 0 60px;
+  }
+  .display{
+    font-family:"Arial Narrow", "Helvetica Neue Condensed", "Segoe UI", Arial, sans-serif;
+    font-weight:800;
+    letter-spacing:0.02em;
+    text-transform:uppercase;
+  }
+  header.hero{
+    padding:48px 24px 36px;
+    text-align:center;
+    background:
+      radial-gradient(ellipse at top, rgba(61,220,132,0.15), transparent 60%),
+      var(--navy-dark);
+    border-bottom:1px solid var(--line);
+  }
+  .badge{
+    display:inline-block;
+    font-size:12px;
+    letter-spacing:0.14em;
+    color:var(--navy-dark);
+    background:var(--gold);
+    padding:4px 12px;
+    border-radius:3px;
+    font-weight:700;
+    margin-bottom:18px;
+  }
+  h1.display{
+    font-size:clamp(32px,6vw,56px);
+    margin:0 0 12px;
+    color:var(--text-main);
+  }
+  h1.display span{color:var(--pitch-green);}
+  .hero p{
+    max-width:560px;
+    margin:0 auto;
+    color:var(--text-muted);
+    font-size:17px;
+  }
+  main{
+    max-width:960px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+  .instructions{
+    margin:32px 0 20px;
+    padding:14px 18px;
+    background:var(--navy-mid);
+    border-left:3px solid var(--pitch-green);
+    border-radius:2px;
+    font-size:15px;
+    color:var(--text-muted);
+  }
+  .instructions strong{color:var(--text-main);}
+
+  .sheet-wrap{
+    background:var(--navy-mid);
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+    margin-bottom:24px;
+  }
+  .sheet-topbar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 16px;
+    background:var(--navy-card);
+    border-bottom:1px solid var(--line);
+  }
+  .fx{
+    font-style:italic;
+    color:var(--pitch-green);
+    font-weight:700;
+    font-size:14px;
+    flex-shrink:0;
+  }
+  #formulaBar{
+    flex:1;
+    background:var(--navy-dark);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:7px 10px;
+    color:var(--text-main);
+    font-family:"Courier New", monospace;
+    font-size:14px;
+    min-height:16px;
+  }
+
+  .table-scroll{
+    overflow-x:auto;
+  }
+  table.sheet{
+    border-collapse:collapse;
+    width:100%;
+    min-width:560px;
+  }
+  table.sheet th, table.sheet td{
+    border:1px solid var(--line);
+    padding:10px 12px;
+    text-align:left;
+    font-size:14px;
+  }
+  .corner{
+    background:var(--navy-card);
+    width:34px;
+  }
+  .col-letter{
+    background:var(--navy-card);
+    color:var(--pitch-green);
+    text-align:center;
+    font-weight:700;
+    cursor:pointer;
+    user-select:none;
+  }
+  .col-letter:hover, .row-num:hover{ background:#28405e; }
+  .row-num{
+    background:var(--navy-card);
+    color:var(--pitch-green);
+    text-align:center;
+    font-weight:700;
+    cursor:pointer;
+    user-select:none;
+    width:28px;
+  }
+  .label-cell{
+    background:rgba(255,200,87,0.08);
+    font-weight:700;
+    cursor:pointer;
+  }
+  .label-cell:hover{background:rgba(255,200,87,0.18);}
+  td.value-cell{
+    cursor:pointer;
+  }
+  td.value-cell:hover{background:rgba(61,220,132,0.12);}
+  .total-row td{
+    font-weight:700;
+    background:var(--navy-card);
+  }
+  .formula-cell{
+    cursor:pointer;
+    font-family:"Courier New", monospace;
+    color:var(--gold);
+  }
+  .formula-cell:hover{background:rgba(255,200,87,0.15);}
+
+  .highlight{
+    outline:2px solid var(--pitch-green);
+    outline-offset:-2px;
+    background:rgba(61,220,132,0.22) !important;
+  }
+
+  .tabs{
+    display:flex;
+    gap:2px;
+    padding:10px 16px 14px;
+    background:var(--navy-card);
+    border-top:1px solid var(--line);
+  }
+  .tab{
+    padding:8px 16px;
+    background:var(--navy-mid);
+    color:var(--text-muted);
+    border:1px solid var(--line);
+    border-bottom:none;
+    border-radius:6px 6px 0 0;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:600;
+  }
+  .tab.active{
+    background:var(--navy-dark);
+    color:var(--pitch-green);
+  }
+
+  #panel{
+    background:var(--navy-mid);
+    border:1px solid var(--pitch-green);
+    border-radius:8px;
+    padding:20px 22px;
+    margin-bottom:40px;
+    min-height:88px;
+  }
+  #panel .term{
+    display:inline-block;
+    font-size:13px;
+    letter-spacing:0.08em;
+    color:var(--navy-dark);
+    background:var(--pitch-green);
+    padding:3px 10px;
+    border-radius:3px;
+    font-weight:700;
+    margin-bottom:10px;
+  }
+  #panel p{margin:0; color:var(--text-main); font-size:15px;}
+  #panel p.placeholder{color:var(--text-muted); font-style:italic;}
+
+  .glossary h2.display{
+    font-size:22px;
+    margin-bottom:4px;
+  }
+  .glossary > p{color:var(--text-muted); margin-top:0; margin-bottom:20px; font-size:14px;}
+  .glossary-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(220px,1fr));
+    gap:14px;
+  }
+  .gterm{
+    padding:14px 16px;
+    background:var(--navy-mid);
+    border-left:3px solid var(--pitch-green);
+    border-radius:2px;
+  }
+  .gterm b{display:block; margin-bottom:4px; font-size:14px;}
+  .gterm span{color:var(--text-muted); font-size:13px;}
+
+  footer{
+    text-align:center;
+    color:var(--text-muted);
+    font-size:12px;
+    margin-top:40px;
+  }
+
+  @media (prefers-reduced-motion: no-preference){
+    #panel{transition:background 0.2s ease;}
+  }
+  :focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:2px;
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="badge">FIFA 26 · Squad Stats Hub</span>
+  <h1 class="display">Every squad<br><span>runs on a spreadsheet</span></h1>
+  <p>Behind every FIFA career mode save, scouting report, and match-day lineup is a spreadsheet quietly doing the maths. Click around the squad sheet below to learn the vocabulary that makes it work.</p>
+</header>
+
+<main>
+  <p class="instructions"><strong>How to use this:</strong> click on a column letter, row number, stat, or the total row below. Each click reveals a spreadsheet term in the panel underneath. Try to click every highlighted part before you're done.</p>
+
+  <div class="sheet-wrap">
+    <div class="sheet-topbar">
+      <span class="fx">f(x)</span>
+      <div id="formulaBar">Click a cell to see what's inside it</div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="sheet" id="sheet">
+        <thead>
+          <tr>
+            <td class="corner"></td>
+            <th class="col-letter" data-term="column" data-cell="A">A</th>
+            <th class="col-letter" data-term="column" data-cell="B">B</th>
+            <th class="col-letter" data-term="column" data-cell="C">C</th>
+            <th class="col-letter" data-term="column" data-cell="D">D</th>
+            <th class="col-letter" data-term="column" data-cell="E">E</th>
+          </tr>
+        </thead>
+        <tbody id="sheetBody">
+          <!-- rows injected by JS so we can swap "worksheets" -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-sheet="prem">Premier Squad</div>
+      <div class="tab" data-sheet="ucl">Champions Squad</div>
+    </div>
+  </div>
+
+  <div id="panel">
+    <p class="placeholder">Click something on the squad sheet above — your first term will show up here.</p>
+  </div>
+
+  <section class="glossary">
+    <h2 class="display">Full glossary</h2>
+    <p>Everything above, in one place — good for a quick recap before the quiz.</p>
+    <div class="glossary-grid" id="glossaryGrid"></div>
+  </section>
+
+  <footer>Player stats are simplified for practice, not official FIFA 26 ratings.</footer>
+</main>
+
+<script>
+const TERMS = {
+  spreadsheet: {
+    label: "Spreadsheet",
+    text: "The whole squad sheet you're looking at is a spreadsheet — a grid of rows and columns used to store and calculate data, like every player's stats in one place."
+  },
+  workbook: {
+    label: "Workbook",
+    text: "The entire file — both the Premier Squad tab and the Champions Squad tab together — is the workbook. One workbook can hold many worksheets."
+  },
+  worksheet: {
+    label: "Worksheet",
+    text: "Each tab at the bottom (Premier Squad, Champions Squad) is a worksheet — one page of data inside the workbook. Switch tabs and the whole sheet changes."
+  },
+  column: {
+    label: "Column",
+    text: "A column runs top to bottom and holds one category of stat for every player — for example, column C holds everyone's Goals."
+  },
+  row: {
+    label: "Row",
+    text: "A row runs left to right and holds everything about one player — their position, goals, assists, and cards, all in one line."
+  },
+  cell: {
+    label: "Cell · Cell Address · Value",
+    text: "A cell is the box where a row and column meet. Its cell address names that exact location — like C3 for column C, row 3. The number or text stored inside it is the value."
+  },
+  label_cell: {
+    label: "Label",
+    text: "Text used to identify what a column or row means — like \"Goals\" or \"Assists\" — is called a label. Labels aren't calculated; they're just headings."
+  },
+  range: {
+    label: "Cell Range",
+    text: "A cell range is a group of neighbouring cells treated as one block — C2:C6 means every cell from C2 down to C6, all six players' Goals values."
+  },
+  formula: {
+    label: "Formula · Function",
+    text: "A formula is an instruction that calculates something automatically — like =SUM(C2:C6). SUM is a function: a ready-made tool a formula can use instead of adding numbers by hand."
+  }
+};
+
+const SHEETS = {
+  prem: [
+    ["Messi",      "RW", 24, 18, 1],
+    ["Haaland",    "ST", 31, 6,  2],
+    ["Mbappé",     "ST", 27, 9,  3],
+    ["Bellingham", "CM", 15, 11, 4],
+    ["Salah",      "RW", 19, 13, 2],
+  ],
+  ucl: [
+    ["Vinícius Jr", "LW", 21, 14, 2],
+    ["Kane",         "ST", 29, 5,  1],
+    ["Pedri",        "CM", 9,  16, 3],
+    ["Saka",         "RW", 17, 12, 1],
+    ["Musiala",      "CM", 13, 10, 2],
+  ]
+};
+
+const HEADERS = ["Player", "Position", "Goals", "Assists", "Cards"];
+let currentSheet = "prem";
+
+function buildRows(){
+  const tbody = document.getElementById('sheetBody');
+  tbody.innerHTML = "";
+
+  // header row (row 1)
+  const headRow = document.createElement('tr');
+  const rowNumHead = document.createElement('td');
+  rowNumHead.className = 'row-num';
+  rowNumHead.textContent = '1';
+  rowNumHead.dataset.term = 'row';
+  rowNumHead.dataset.cell = 'Row 1';
+  headRow.appendChild(rowNumHead);
+  HEADERS.forEach((h, i) => {
+    const td = document.createElement('td');
+    td.className = 'label-cell';
+    td.textContent = h;
+    td.dataset.term = 'label_cell';
+    td.dataset.cell = String.fromCharCode(65+i) + '1';
+    td.dataset.formula = h;
+    headRow.appendChild(td);
+  });
+  tbody.appendChild(headRow);
+
+  // player rows
+  const data = SHEETS[currentSheet];
+  data.forEach((player, rIdx) => {
+    const tr = document.createElement('tr');
+    const rowNum = document.createElement('td');
+    rowNum.className = 'row-num';
+    rowNum.textContent = String(rIdx+2);
+    rowNum.dataset.term = 'row';
+    rowNum.dataset.cell = 'Row ' + (rIdx+2);
+    tr.appendChild(rowNum);
+
+    player.forEach((val, cIdx) => {
+      const td = document.createElement('td');
+      const colLetter = String.fromCharCode(65+cIdx);
+      const addr = colLetter + (rIdx+2);
+      td.dataset.cell = addr;
+      td.dataset.formula = String(val);
+      if(cIdx === 0){
+        td.className = 'label-cell';
+        td.textContent = val;
+        td.dataset.term = 'label_cell';
+      } else {
+        td.className = 'value-cell';
+        td.textContent = val;
+        td.dataset.term = 'cell';
+      }
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  // total row
+  const totalRow = document.createElement('tr');
+  totalRow.className = 'total-row';
+  const totalRowNum = document.createElement('td');
+  totalRowNum.className = 'row-num';
+  totalRowNum.textContent = String(data.length+2);
+  totalRowNum.dataset.term = 'row';
+  totalRowNum.dataset.cell = 'Row ' + (data.length+2);
+  totalRow.appendChild(totalRowNum);
+
+  const totalLabel = document.createElement('td');
+  totalLabel.className = 'label-cell';
+  totalLabel.textContent = 'TOTAL';
+  totalLabel.dataset.term = 'label_cell';
+  totalLabel.dataset.cell = 'A' + (data.length+2);
+  totalLabel.dataset.formula = 'TOTAL';
+  totalRow.appendChild(totalLabel);
+
+  totalRow.appendChild(document.createElement('td')); // Position col, blank
+
+  const goalsSum = data.reduce((s,p)=>s+p[2],0);
+  const totalGoals = document.createElement('td');
+  totalGoals.className = 'formula-cell';
+  totalGoals.textContent = goalsSum;
+  totalGoals.dataset.term = 'formula';
+  totalGoals.dataset.cell = 'C' + (data.length+2);
+  totalGoals.dataset.formula = '=SUM(C2:C' + (data.length+1) + ')';
+  totalGoals.dataset.rangeHighlight = 'C';
+  totalRow.appendChild(totalGoals);
+
+  totalRow.appendChild(document.createElement('td'));
+  totalRow.appendChild(document.createElement('td'));
+  tbody.appendChild(totalRow);
+
+  attachHandlers();
+}
+
+function clearHighlights(){
+  document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
+}
+
+function showTerm(key, cellRef, formulaText, rangeCol){
+  clearHighlights();
+  const t = TERMS[key];
+  if(!t) return;
+  const panel = document.getElementById('panel');
+  panel.innerHTML = `<span class="term">${cellRef ? cellRef + ' — ' : ''}${t.label}</span><p>${t.text}</p>`;
+  document.getElementById('formulaBar').textContent = formulaText || (cellRef ? cellRef : '');
+
+  if(rangeCol){
+    document.querySelectorAll('#sheetBody td').forEach(td=>{
+      if(td.dataset.cell && td.dataset.cell.startsWith(rangeCol) && /\d/.test(td.dataset.cell) && !td.classList.contains('label-cell') && !td.classList.contains('formula-cell')){
+        td.classList.add('highlight');
+      }
+    });
+  }
+}
+
+function attachHandlers(){
+  document.querySelectorAll('#sheet [data-term]').forEach(el=>{
+    el.setAttribute('tabindex','0');
+    el.addEventListener('click', handleClick);
+    el.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); handleClick.call(el, e);} });
+  });
+}
+
+function handleClick(e){
+  const el = this;
+  const term = el.dataset.term;
+  const cellRef = el.dataset.cell;
+  const formulaText = el.dataset.formula || '';
+  const rangeCol = el.dataset.rangeHighlight;
+  showTerm(term, cellRef, formulaText, rangeCol);
+  clearHighlights();
+  el.classList.add('highlight');
+  if(rangeCol){
+    document.querySelectorAll('#sheetBody td').forEach(td=>{
+      if(td.dataset.cell && td.dataset.cell.startsWith(rangeCol) && !td.classList.contains('label-cell') && !td.classList.contains('formula-cell')){
+        td.classList.add('highlight');
+      }
+    });
+  }
+}
+
+document.querySelectorAll('.col-letter').forEach(el=>{
+  el.addEventListener('click', ()=> showTerm('column', 'Column ' + el.dataset.cell, 'Column ' + el.dataset.cell));
+});
+
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    currentSheet = tab.dataset.sheet;
+    buildRows();
+    showTerm('worksheet', tab.textContent);
+  });
+});
+
+function buildGlossary(){
+  const grid = document.getElementById('glossaryGrid');
+  const order = ['spreadsheet','workbook','worksheet','column','row','cell','label_cell','range','formula'];
+  order.forEach(key=>{
+    const t = TERMS[key];
+    const div = document.createElement('div');
+    div.className = 'gterm';
+    div.innerHTML = `<b>${t.label}</b><span>${t.text}</span>`;
+    grid.appendChild(div);
+  });
+}
+
+buildRows();
+buildGlossary();
+</script>
+
+</body>
+</html>
